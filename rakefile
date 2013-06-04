@@ -1,0 +1,54 @@
+require 'fileutils'
+
+task :clean do
+  FileInstall.clean
+end
+
+task :install do
+  FileInstall.install
+end
+
+task :create => :install do
+  FileInstall.create
+end
+
+task :hello => :create do
+  FileInstall.hello
+end
+
+class FileInstall
+
+  OUT_DIR = "tmp"
+  OUT_FILE = OUT_DIR + "/hello.txt"
+  TEXT_INSIDE = "Hello"
+
+  class << self
+
+    def clean
+      FileUtils.rm_rf(OUT_DIR) if dir_exists?
+    end 
+
+    def install
+      Dir.mkdir(OUT_DIR) unless dir_exists?
+    end
+
+    def create
+      File.new(OUT_FILE, 'w') unless file_exists?
+    end
+
+    def hello
+      return unless file_exists?
+      File.open(OUT_FILE, 'w') { |f| f.write(TEXT_INSIDE) }
+    end
+
+    def file_exists?
+      File.exists?(OUT_FILE)
+    end
+
+    def dir_exists?
+      Dir.exists?(OUT_DIR)
+    end
+
+  end
+
+end
